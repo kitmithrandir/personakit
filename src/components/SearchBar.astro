@@ -1,0 +1,27 @@
+---
+---
+
+<div class="relative">
+  <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-forge-muted dark:text-forge-muted-dark pointer-events-none" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+  </svg>
+  <input
+    id="persona-search"
+    type="text"
+    placeholder="Search by name, description, or tag..."
+    class="w-full pl-11 pr-10 py-3 rounded-lg border border-forge-border dark:border-forge-border-dark bg-forge-surface dark:bg-forge-surface-dark text-forge-text dark:text-forge-text-dark placeholder:text-forge-muted dark:placeholder:text-forge-muted-dark focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent transition-shadow"
+    autocomplete="off"
+    spellcheck="false"
+  />
+  <button
+    id="search-clear"
+    type="button"
+    class="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 text-forge-muted dark:text-forge-muted-dark hover:text-forge-text dark:hover:text-forge-text-dark transition-colors cursor-pointer"
+    style="display:none"
+    aria-label="Clear search"
+  >
+    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+    </svg>
+  </button>
+</div>

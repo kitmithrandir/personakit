@@ -1,0 +1,577 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const TAG_LIST = [
+  "coding", "creative", "support", "humor", "productivity",
+  "research", "writing", "analysis", "teaching", "gaming",
+  "technical", "professional", "casual", "friendly", "direct",
+];
+---
+
+<Layout title="Contribute" description="Share your AI persona with the PersonaKit community.">
+  <!-- Section 1: Intro -->
+  <section class="max-w-3xl">
+    <h1 class="text-3xl sm:text-4xl font-bold">Contribute a Persona</h1>
+    <p class="mt-4 text-forge-muted dark:text-forge-muted-dark leading-relaxed">
+      Share your AI persona with the PersonaKit community. Paste your IDENTITY.md and SOUL.md,
+      fill in a few details, and submit it for review. Once approved, it'll appear on the site
+      with exports for every platform.
+    </p>
+    <p class="mt-3 text-sm text-forge-muted dark:text-forge-muted-dark">
+      Don't have files yet? Use any AI assistant to help you create them &mdash; describe the specialist you want
+      and ask it to generate an IDENTITY.md and SOUL.md.
+    </p>
+  </section>
+
+  <!-- Section 2: Paste Area -->
+  <section class="mt-10 max-w-3xl">
+    <h2 class="text-xl font-semibold mb-4">Your files</h2>
+
+    <div class="space-y-6">
+      <!-- IDENTITY.md textarea -->
+      <div>
+        <label for="identity-input" class="flex items-center gap-2 text-sm font-medium mb-2">
+          <span role="img" aria-hidden="true">&#x1FAAA;</span>
+          IDENTITY.md
+          <span id="identity-size" class="ml-auto text-xs text-forge-muted dark:text-forge-muted-dark font-normal">0 bytes</span>
+        </label>
+        <textarea
+          id="identity-input"
+          class="w-full h-56 px-4 py-3 rounded-lg border border-forge-border dark:border-forge-border-dark bg-forge-surface dark:bg-forge-surface-dark text-forge-text dark:text-forge-text-dark font-mono text-sm resize-y focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent"
+          placeholder={`# My Persona\n\nYou are a specialist in...\n\n(Frontmatter is optional — just paste the content.\nIf you include frontmatter, we'll auto-fill the details below.)`}
+          spellcheck="false"
+        ></textarea>
+      </div>
+
+      <!-- SOUL.md textarea -->
+      <div>
+        <label for="soul-input" class="flex items-center gap-2 text-sm font-medium mb-2">
+          <span role="img" aria-hidden="true">&#x2728;</span>
+          SOUL.md
+          <span id="soul-size" class="ml-auto text-xs text-forge-muted dark:text-forge-muted-dark font-normal">0 bytes</span>
+        </label>
+        <textarea
+          id="soul-input"
+          class="w-full h-48 px-4 py-3 rounded-lg border border-forge-border dark:border-forge-border-dark bg-forge-surface dark:bg-forge-surface-dark text-forge-text dark:text-forge-text-dark font-mono text-sm resize-y focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent"
+          placeholder={`# Soul\n\n## Personality\n- Trait one\n- Trait two\n\n## Communication Style\nDescribe how this persona communicates...\n\n## Boundaries\n- What this persona won't do`}
+          spellcheck="false"
+        ></textarea>
+      </div>
+
+      <!-- Total size -->
+      <p id="total-size" class="text-xs text-forge-muted dark:text-forge-muted-dark">
+        Total: 0 / 50,000 bytes
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 3: Persona Details -->
+  <section class="mt-10 max-w-3xl">
+    <h2 class="text-xl font-semibold mb-2">Persona details</h2>
+    <p class="text-sm text-forge-muted dark:text-forge-muted-dark mb-6">
+      These describe how your persona will appear on the site. If your IDENTITY.md includes frontmatter, these fields will auto-fill.
+    </p>
+
+    <div class="space-y-5">
+      <!-- Persona name -->
+      <div>
+        <label for="submit-name" class="block text-sm font-medium mb-1.5">Persona name <span class="text-red-500">*</span></label>
+        <input
+          id="submit-name"
+          type="text"
+          class="w-full max-w-sm px-3 py-2 rounded-lg border border-forge-border dark:border-forge-border-dark bg-forge-surface dark:bg-forge-surface-dark text-forge-text dark:text-forge-text-dark text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent"
+          placeholder="The Architect"
+          maxlength="50"
+        />
+        <p class="mt-1 text-xs text-forge-muted dark:text-forge-muted-dark">1-50 characters.</p>
+      </div>
+
+      <!-- Emoji -->
+      <div class="relative">
+        <label for="submit-emoji" class="block text-sm font-medium mb-1.5">Emoji <span class="text-red-500">*</span></label>
+        <div class="flex items-center gap-2">
+          <input
+            id="submit-emoji"
+            type="text"
+            class="w-20 px-3 py-2 rounded-lg border border-forge-border dark:border-forge-border-dark bg-forge-surface dark:bg-forge-surface-dark text-forge-text dark:text-forge-text-dark text-lg text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent"
+            placeholder="&#x1F9D9;"
+            maxlength="4"
+          />
+          <button
+            id="emoji-picker-btn"
+            type="button"
+            class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg border border-forge-border dark:border-forge-border-dark bg-forge-surface dark:bg-forge-surface-dark text-forge-muted dark:text-forge-muted-dark hover:border-indigo-400 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z" />
+            </svg>
+            Pick
+          </button>
+        </div>
+
+        <!-- Emoji picker popup -->
+        <div id="emoji-picker" class="absolute z-50 mt-2 hidden">
+          <div class="bg-forge-surface dark:bg-forge-surface-dark border border-forge-border dark:border-forge-border-dark rounded-xl shadow-lg p-3 w-72">
+            <div id="emoji-grid" class="grid grid-cols-8 gap-1">
+              <!-- Populated by script -->
+            </div>
+            <p class="mt-2 text-xs text-forge-muted dark:text-forge-muted-dark text-center">Click to select</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label for="submit-description" class="block text-sm font-medium mb-1.5">Short description <span class="text-red-500">*</span></label>
+        <input
+          id="submit-description"
+          type="text"
+          class="w-full px-3 py-2 rounded-lg border border-forge-border dark:border-forge-border-dark bg-forge-surface dark:bg-forge-surface-dark text-forge-text dark:text-forge-text-dark text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent"
+          placeholder="A meticulous software architect who designs scalable systems."
+          maxlength="200"
+        />
+        <p class="mt-1 text-xs text-forge-muted dark:text-forge-muted-dark">1-200 characters. Shown on the persona card.</p>
+      </div>
+
+      <!-- Tags -->
+      <div>
+        <label class="block text-sm font-medium mb-2">Tags <span class="text-red-500">*</span> <span class="font-normal text-forge-muted dark:text-forge-muted-dark">(pick 1-3)</span></label>
+        <div id="tag-picker" class="flex flex-wrap gap-2">
+          {TAG_LIST.map((tag) => (
+            <button
+              type="button"
+              class="tag-pill px-3 py-1.5 text-xs font-medium rounded-full border border-forge-border dark:border-forge-border-dark text-forge-muted dark:text-forge-muted-dark hover:border-indigo-400 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
+              data-tag={tag}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Author handle -->
+      <div>
+        <label for="submit-author" class="block text-sm font-medium mb-1.5">Author handle <span class="text-red-500">*</span></label>
+        <input
+          id="submit-author"
+          type="text"
+          class="w-full max-w-xs px-3 py-2 rounded-lg border border-forge-border dark:border-forge-border-dark bg-forge-surface dark:bg-forge-surface-dark text-forge-text dark:text-forge-text-dark text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent"
+          placeholder="your-handle"
+          pattern="[a-z0-9\-]+"
+          maxlength="40"
+        />
+        <p class="mt-1 text-xs text-forge-muted dark:text-forge-muted-dark">Lowercase letters, numbers, and hyphens only.</p>
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label for="submit-email" class="block text-sm font-medium mb-1.5">Email address <span class="text-red-500">*</span></label>
+        <input
+          id="submit-email"
+          type="email"
+          class="w-full max-w-sm px-3 py-2 rounded-lg border border-forge-border dark:border-forge-border-dark bg-forge-surface dark:bg-forge-surface-dark text-forge-text dark:text-forge-text-dark text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent"
+          placeholder="you@example.com"
+        />
+        <p class="mt-1 text-xs text-forge-muted dark:text-forge-muted-dark">
+          Only used for submission notifications. Won't appear on the site or in any public PR.
+        </p>
+      </div>
+
+      <!-- Marketing opt-in -->
+      <div class="flex items-start gap-2.5">
+        <input
+          id="submit-marketing"
+          type="checkbox"
+          class="mt-0.5 rounded border-forge-border dark:border-forge-border-dark"
+        />
+        <label for="submit-marketing" class="text-sm text-forge-muted dark:text-forge-muted-dark">
+          Send me occasional updates about PersonaKit (new features, community highlights). No spam, unsubscribe anytime.
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <!-- PII Warning (shown when personal info detected in pasted content, non-blocking) -->
+  <div id="pii-warning" class="mt-6 max-w-3xl hidden" role="status">
+    <div class="p-4 border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50 rounded-lg">
+      <p class="font-medium text-amber-800 dark:text-amber-300">Possible personal information detected</p>
+      <ul id="pii-matches" class="mt-2 space-y-1 text-sm text-amber-700 dark:text-amber-400 list-disc list-inside"></ul>
+      <p class="mt-3 text-xs text-amber-600 dark:text-amber-500">
+        Please review before submitting. Your content will be shared publicly.
+      </p>
+    </div>
+  </div>
+
+  <!-- Validation Feedback -->
+  <div id="validation-feedback" class="mt-6 max-w-3xl hidden" role="alert"></div>
+
+  <!-- Submit button -->
+  <div class="mt-8 max-w-3xl">
+    <button
+      id="submit-btn"
+      type="button"
+      class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-lg bg-indigo-600 dark:bg-indigo-500 text-white hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors cursor-pointer"
+    >
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+      </svg>
+      Submit to PersonaKit
+    </button>
+  </div>
+
+  <!-- Coming soon notice (shown on submit click) -->
+  <div id="submit-notice" class="mt-6 max-w-3xl hidden">
+    <div class="p-4 border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50 rounded-lg">
+      <p class="font-medium text-amber-800 dark:text-amber-300">Coming soon</p>
+      <p class="mt-2 text-sm text-amber-700 dark:text-amber-400">
+        The submission system is being built. In the meantime, you can email your persona files to
+        <a href="mailto:mithrandir@personakit.dev" class="underline hover:no-underline">mithrandir@personakit.dev</a>
+        and we'll add them to the site.
+      </p>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .tag-pill[data-active] {
+    background-color: #4f46e5;
+    border-color: #4f46e5;
+    color: #fff;
+  }
+  :global(.dark) .tag-pill[data-active] {
+    background-color: #6366f1;
+    border-color: #6366f1;
+    color: #fff;
+  }
+</style>
+
+<script>
+  // ── Constants ──
+  const TAG_WHITELIST = new Set([
+    "coding", "creative", "support", "humor", "productivity",
+    "research", "writing", "analysis", "teaching", "gaming",
+    "technical", "professional", "casual", "friendly", "direct",
+  ]);
+
+  const SLUG_PATTERN = /^[a-z0-9-]+$/;
+  const MAX_SIZE = 50 * 1024; // 50KB
+
+  // ── PII Detection Patterns ──
+  const PII_PATTERNS: { label: string; pattern: RegExp }[] = [
+    { label: "Email address", pattern: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
+    { label: "Phone number", pattern: /(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g },
+    { label: "IP address", pattern: /\b(?:\d{1,3}\.){3}\d{1,3}\b/g },
+    { label: "Anthropic API key", pattern: /sk-ant-[a-zA-Z0-9_-]{20,}/g },
+    { label: "OpenAI API key", pattern: /sk-[a-zA-Z0-9]{20,}/g },
+    { label: "GitHub token", pattern: /ghp_[a-zA-Z0-9]{36,}/g },
+    { label: "Bearer token", pattern: /Bearer\s+[a-zA-Z0-9._\-]{20,}/g },
+    { label: "AWS key", pattern: /AKIA[0-9A-Z]{16}/g },
+  ];
+
+  // ── DOM refs ──
+  const identityInput = document.getElementById("identity-input") as HTMLTextAreaElement;
+  const soulInput = document.getElementById("soul-input") as HTMLTextAreaElement;
+  const identitySize = document.getElementById("identity-size")!;
+  const soulSize = document.getElementById("soul-size")!;
+  const totalSizeEl = document.getElementById("total-size")!;
+  const feedback = document.getElementById("validation-feedback")!;
+  const piiWarning = document.getElementById("pii-warning")!;
+  const piiMatches = document.getElementById("pii-matches")!;
+  const submitBtn = document.getElementById("submit-btn")!;
+  const submitNotice = document.getElementById("submit-notice")!;
+  const submitName = document.getElementById("submit-name") as HTMLInputElement;
+  const submitEmoji = document.getElementById("submit-emoji") as HTMLInputElement;
+  const submitDescription = document.getElementById("submit-description") as HTMLInputElement;
+  const submitAuthor = document.getElementById("submit-author") as HTMLInputElement;
+  const submitEmail = document.getElementById("submit-email") as HTMLInputElement;
+
+  // ── Emoji picker ──
+  const EMOJI_LIST = [
+    // People & roles
+    "\u{1F9D9}", "\u{1F9D1}\u200D\u{1F4BB}", "\u{1F469}\u200D\u{1F52C}", "\u{1F468}\u200D\u{1F3EB}", "\u{1F9D1}\u200D\u{1F3A8}", "\u{1F469}\u200D\u2695\uFE0F", "\u{1F575}\uFE0F", "\u{1F9D1}\u200D\u{1F680}",
+    "\u{1F468}\u200D\u{1F373}", "\u{1F9D1}\u200D\u{1F527}", "\u{1F469}\u200D\u{1F4BC}", "\u{1F9B8}", "\u{1F9DD}", "\u{1F916}", "\u{1F47B}", "\u{1F9E0}",
+    // Objects & tools
+    "\u{1F52C}", "\u{1F4DA}", "\u{1F3AF}", "\u{1F6E1}\uFE0F", "\u26A1", "\u{1F525}", "\u{1F4A1}", "\u{1F9EA}",
+    "\u{1F3A8}", "\u270D\uFE0F", "\u{1F5C2}\uFE0F", "\u{1F9F0}", "\u{1F52E}", "\u{1F4D0}", "\u{1F3AD}", "\u{1F9E9}",
+    // Nature & symbols
+    "\u{1F98A}", "\u{1F409}", "\u{1F989}", "\u{1F419}", "\u{1F31F}", "\u{1F48E}", "\u{1F3D4}\uFE0F", "\u{1F30A}",
+    "\u2728", "\u2699\uFE0F", "\u{1F3B2}", "\u{1F3F4}\u200D\u2620\uFE0F", "\u{1FA84}", "\u{1F5E1}\uFE0F", "\u{1F6F8}", "\u{1F3B5}",
+  ];
+
+  const emojiPickerBtn = document.getElementById("emoji-picker-btn")!;
+  const emojiPicker = document.getElementById("emoji-picker")!;
+  const emojiGrid = document.getElementById("emoji-grid")!;
+
+  // Build grid buttons
+  emojiGrid.innerHTML = EMOJI_LIST.map(
+    (e) => `<button type="button" class="emoji-opt w-8 h-8 flex items-center justify-center text-xl rounded-lg hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors cursor-pointer" data-emoji="${e}">${e}</button>`
+  ).join("");
+
+  // Toggle picker
+  emojiPickerBtn.addEventListener("click", () => {
+    emojiPicker.classList.toggle("hidden");
+  });
+
+  // Select emoji
+  emojiGrid.addEventListener("click", (e) => {
+    const btn = (e.target as HTMLElement).closest(".emoji-opt") as HTMLElement | null;
+    if (!btn) return;
+    submitEmoji.value = btn.dataset.emoji!;
+    emojiPicker.classList.add("hidden");
+  });
+
+  // Close picker on outside click
+  document.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
+    if (!emojiPicker.contains(target) && target !== emojiPickerBtn && !emojiPickerBtn.contains(target)) {
+      emojiPicker.classList.add("hidden");
+    }
+  });
+
+  // ── Tag picker state ──
+  const selectedTags = new Set<string>();
+
+  document.getElementById("tag-picker")!.addEventListener("click", (e) => {
+    const pill = (e.target as HTMLElement).closest(".tag-pill") as HTMLElement | null;
+    if (!pill) return;
+
+    const tag = pill.dataset.tag!;
+    if (selectedTags.has(tag)) {
+      selectedTags.delete(tag);
+      pill.removeAttribute("data-active");
+    } else {
+      if (selectedTags.size >= 3) return; // max 3
+      selectedTags.add(tag);
+      pill.setAttribute("data-active", "");
+    }
+  });
+
+  // ── Size counters ──
+  function updateSizes() {
+    const iBytes = new Blob([identityInput.value]).size;
+    const sBytes = new Blob([soulInput.value]).size;
+    const tBytes = iBytes + sBytes;
+
+    identitySize.textContent = `${iBytes.toLocaleString()} bytes`;
+    soulSize.textContent = `${sBytes.toLocaleString()} bytes`;
+    totalSizeEl.textContent = `Total: ${tBytes.toLocaleString()} / 50,000 bytes`;
+
+    if (tBytes > MAX_SIZE) {
+      totalSizeEl.classList.add("text-red-600", "dark:text-red-400");
+      totalSizeEl.classList.remove("text-forge-muted", "dark:text-forge-muted-dark");
+    } else {
+      totalSizeEl.classList.remove("text-red-600", "dark:text-red-400");
+      totalSizeEl.classList.add("text-forge-muted", "dark:text-forge-muted-dark");
+    }
+  }
+
+  identityInput.addEventListener("input", updateSizes);
+  soulInput.addEventListener("input", updateSizes);
+
+  // ── Frontmatter parser ──
+  function parseFrontmatter(raw: string): { data: Record<string, unknown>; content: string } | null {
+    const trimmed = raw.trim();
+    if (!trimmed.startsWith("---")) return null;
+
+    const secondFence = trimmed.indexOf("---", 3);
+    if (secondFence === -1) return null;
+
+    const yamlBlock = trimmed.slice(3, secondFence).trim();
+    const content = trimmed.slice(secondFence + 3).trim();
+
+    const data: Record<string, unknown> = {};
+
+    for (const line of yamlBlock.split("\n")) {
+      const colonIdx = line.indexOf(":");
+      if (colonIdx === -1) continue;
+
+      const key = line.slice(0, colonIdx).trim();
+      let val = line.slice(colonIdx + 1).trim();
+
+      // Quoted string
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        data[key] = val.slice(1, -1);
+        continue;
+      }
+
+      // Array: ["tag1", "tag2"]
+      if (val.startsWith("[") && val.endsWith("]")) {
+        const inner = val.slice(1, -1);
+        data[key] = inner
+          .split(",")
+          .map((s) => s.trim().replace(/^["']|["']$/g, ""))
+          .filter((s) => s.length > 0);
+        continue;
+      }
+
+      // Plain value
+      data[key] = val;
+    }
+
+    return { data, content };
+  }
+
+  // ── Auto-fill from frontmatter on paste/input ──
+  function tryAutoFill() {
+    const parsed = parseFrontmatter(identityInput.value);
+    if (!parsed) return;
+
+    const fm = parsed.data;
+    if (fm.name && typeof fm.name === "string" && !submitName.value.trim()) {
+      submitName.value = String(fm.name);
+    }
+    if (fm.emoji && typeof fm.emoji === "string" && !submitEmoji.value.trim()) {
+      submitEmoji.value = String(fm.emoji);
+    }
+    if (fm.description && typeof fm.description === "string" && !submitDescription.value.trim()) {
+      submitDescription.value = String(fm.description);
+    }
+    if (fm.author && typeof fm.author === "string" && SLUG_PATTERN.test(String(fm.author)) && !submitAuthor.value.trim()) {
+      submitAuthor.value = String(fm.author);
+    }
+    if (Array.isArray(fm.tags) && selectedTags.size === 0) {
+      for (const t of fm.tags) {
+        if (TAG_WHITELIST.has(String(t)) && selectedTags.size < 3) {
+          selectedTags.add(String(t));
+          const pill = document.querySelector(`.tag-pill[data-tag="${t}"]`);
+          if (pill) pill.setAttribute("data-active", "");
+        }
+      }
+    }
+  }
+
+  identityInput.addEventListener("input", tryAutoFill);
+
+  // ── Validate everything (content + metadata) ──
+  function validateAll(identityRaw: string, soulRaw: string): string[] {
+    const errors: string[] = [];
+
+    // Content validation
+    if (!identityRaw.trim()) {
+      errors.push("IDENTITY.md is empty");
+    }
+    if (!soulRaw.trim()) {
+      errors.push("SOUL.md is empty");
+    }
+    if (errors.length > 0) return errors; // skip size check if empty
+
+    const totalBytes = new Blob([identityRaw]).size + new Blob([soulRaw]).size;
+    if (totalBytes > MAX_SIZE) {
+      errors.push(`Total size ${totalBytes.toLocaleString()} bytes exceeds 50,000 byte limit`);
+    }
+
+    // Metadata validation
+    const name = submitName.value.trim();
+    if (!name) {
+      errors.push("Persona name is required");
+    } else if (name.length > 50) {
+      errors.push(`Persona name is too long (${name.length}/50 characters)`);
+    }
+
+    if (!submitEmoji.value.trim()) {
+      errors.push("Emoji is required");
+    }
+
+    const desc = submitDescription.value.trim();
+    if (!desc) {
+      errors.push("Short description is required");
+    } else if (desc.length > 200) {
+      errors.push(`Description is too long (${desc.length}/200 characters)`);
+    }
+
+    if (selectedTags.size === 0) {
+      errors.push("Select at least 1 tag");
+    }
+
+    const author = submitAuthor.value.trim();
+    if (!author) {
+      errors.push("Author handle is required");
+    } else if (!SLUG_PATTERN.test(author)) {
+      errors.push("Author handle must be lowercase letters, numbers, and hyphens only");
+    }
+
+    const email = submitEmail.value.trim();
+    if (!email) {
+      errors.push("Email address is required");
+    } else if (!email.includes("@") || !email.includes(".")) {
+      errors.push("Email address doesn't look valid");
+    }
+
+    return errors;
+  }
+
+  // ── PII scan (warn, don't block) ──
+  function scanForPII(identityRaw: string, soulRaw: string): string[] {
+    const combined = identityRaw + "\n" + soulRaw;
+    const warnings: string[] = [];
+
+    for (const { label, pattern } of PII_PATTERNS) {
+      pattern.lastIndex = 0;
+      const matches = combined.match(pattern);
+      if (matches) {
+        const unique = [...new Set(matches)];
+        const preview = unique.slice(0, 3).map((m) => {
+          if (m.length > 8) return m.slice(0, 4) + "..." + m.slice(-4);
+          return m;
+        });
+        const suffix = unique.length > 3 ? ` (+${unique.length - 3} more)` : "";
+        warnings.push(`${label}: ${preview.join(", ")}${suffix}`);
+      }
+    }
+
+    return warnings;
+  }
+
+  // ── Helpers ──
+  function escapeHtml(s: string): string {
+    const el = document.createElement("span");
+    el.textContent = s;
+    return el.innerHTML;
+  }
+
+  // ── Submit button ──
+  submitBtn.addEventListener("click", () => {
+    const identityRaw = identityInput.value;
+    const soulRaw = soulInput.value;
+
+    const errors = validateAll(identityRaw, soulRaw);
+
+    if (errors.length > 0) {
+      feedback.innerHTML = `
+        <div class="p-4 border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/50 rounded-lg">
+          <p class="font-medium text-red-800 dark:text-red-300">A few things to fix</p>
+          <ul class="mt-2 space-y-1 text-sm text-red-700 dark:text-red-400 list-disc list-inside">
+            ${errors.map((e) => `<li>${escapeHtml(e)}</li>`).join("")}
+          </ul>
+        </div>`;
+      feedback.classList.remove("hidden");
+      submitNotice.classList.add("hidden");
+      piiWarning.classList.add("hidden");
+      feedback.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    // Success — hide any previous feedback
+    feedback.classList.add("hidden");
+
+    // PII scan (non-blocking warning)
+    const piiWarnings = scanForPII(identityRaw, soulRaw);
+    if (piiWarnings.length > 0) {
+      piiMatches.innerHTML = piiWarnings
+        .map((w) => `<li>${escapeHtml(w)}</li>`)
+        .join("");
+      piiWarning.classList.remove("hidden");
+    } else {
+      piiWarning.classList.add("hidden");
+    }
+
+    // Show coming soon notice
+    submitNotice.classList.remove("hidden");
+    submitNotice.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+
+  // ── Author handle auto-format ──
+  submitAuthor.addEventListener("input", () => {
+    submitAuthor.value = submitAuthor.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
+  });
+</script>

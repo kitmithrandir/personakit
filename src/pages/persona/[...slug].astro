@@ -1,0 +1,251 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import CopyButton from "../../components/CopyButton.astro";
+import ExportButton from "../../components/ExportButton.astro";
+import { renderMarkdown } from "../../utils/markdown";
+import { exportClaudeCode, exportCodex, exportCursor, exportChatGPT, withSecurity } from "../../utils/exports";
+import configsData from "../../../public/configs.json";
+
+interface Persona {
+  slug: string;
+  name: string;
+  emoji: string;
+  description: string;
+  tags: string[];
+  author: string;
+  files_present: string[];
+  files: Record<string, string>;
+}
+
+export function getStaticPaths() {
+  const personas = configsData as Persona[];
+  return personas.map((persona) => ({
+    params: { slug: persona.slug },
+    props: { persona },
+  }));
+}
+
+const { persona } = Astro.props;
+
+// Canonical file order and display names
+const FILE_META: { key: string; label: string; icon: string }[] = [
+  { key: "IDENTITY.md", label: "Identity", icon: "🪪" },
+  { key: "SOUL.md", label: "Soul", icon: "✨" },
+];
+
+// Render all present files to sanitized HTML
+const renderedFiles: { key: string; label: string; icon: string; html: string; raw: string }[] = [];
+for (const meta of FILE_META) {
+  const raw = persona.files[meta.key];
+  if (!raw) continue;
+  const html = await renderMarkdown(raw);
+  renderedFiles.push({
+    key: meta.key,
+    label: meta.label,
+    icon: meta.icon,
+    html,
+    raw,
+  });
+}
+
+// Platform exports
+const claudeCode = exportClaudeCode(persona.files, persona.name);
+const codex = exportCodex(persona.files, persona.name);
+const cursor = exportCursor(persona.files, persona.name);
+const chatgpt = exportChatGPT(persona.files, persona.name);
+---
+
+<Layout title={persona.name} description={persona.description}>
+  <!-- Back link -->
+  <a
+    href="/"
+    class="inline-flex items-center gap-1.5 text-sm text-forge-muted dark:text-forge-muted-dark hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors mb-6"
+  >
+    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+    </svg>
+    Back to all personas
+  </a>
+
+  <!-- Metadata header -->
+  <header class="mb-8">
+    <div class="flex items-start gap-4">
+      <span class="text-5xl" role="img" aria-label={persona.name}>{persona.emoji}</span>
+      <div class="min-w-0">
+        <div class="flex items-center gap-3 flex-wrap">
+          <h1 class="text-3xl font-bold">{persona.name}</h1>
+        </div>
+        <p class="mt-2 text-lg text-forge-muted dark:text-forge-muted-dark">{persona.description}</p>
+        <div class="mt-3 flex flex-wrap items-center gap-2">
+          {persona.tags.map((tag: string) => (
+            <span class="text-xs px-2 py-1 rounded-md bg-stone-200 dark:bg-stone-700 text-forge-muted dark:text-forge-muted-dark">
+              {tag}
+            </span>
+          ))}
+          <span class="text-xs text-forge-muted dark:text-forge-muted-dark">
+            &middot; by {persona.author}
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Usage guidance -->
+  <div class="mb-8 p-4 bg-stone-50 dark:bg-stone-800/50 border border-forge-border dark:border-forge-border-dark rounded-lg text-sm text-forge-muted dark:text-forge-muted-dark">
+    <p>
+      <strong class="text-forge-text dark:text-forge-text-dark">Starting fresh?</strong> Use the export buttons to copy or download for your platform.
+      <strong class="text-forge-text dark:text-forge-text-dark">Already have a setup?</strong> Browse individual files below and grab what you need.
+    </p>
+  </div>
+
+  <!-- Two-column layout -->
+  <div class="flex flex-col lg:flex-row gap-8">
+    <!-- Main column: file sections -->
+    <div id="persona-files" class="flex-1 min-w-0 space-y-4">
+      {renderedFiles.map((file, i) => (
+        <details open={i < 2} class="group border border-forge-border dark:border-forge-border-dark rounded-lg overflow-hidden">
+          <summary class="flex items-center justify-between gap-3 px-5 py-4 cursor-pointer select-none bg-forge-surface dark:bg-forge-surface-dark hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-4 h-4 text-forge-muted dark:text-forge-muted-dark transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+              </svg>
+              <span class="text-lg" role="img" aria-hidden="true">{file.icon}</span>
+              <span class="font-medium">{file.label}</span>
+              <span class="text-xs text-forge-muted dark:text-forge-muted-dark hidden sm:inline">({file.key})</span>
+            </div>
+            <CopyButton text={withSecurity(file.raw)} label="Copy" filename={file.key} class="copy-file-btn" />
+          </summary>
+          <div class="px-5 py-5 border-t border-forge-border dark:border-forge-border-dark">
+            <div class="prose prose-stone dark:prose-invert max-w-none prose-sm" set:html={file.html} />
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <!-- Sidebar: platform exports -->
+    <aside class="lg:w-80 shrink-0">
+      <div class="lg:sticky lg:top-24 space-y-3">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-forge-muted dark:text-forge-muted-dark mb-2">
+          Export for your platform
+        </h2>
+
+        <ExportButton
+          platform="Claude Code"
+          description="Saves as CLAUDE.md"
+          text={claudeCode}
+          filename="CLAUDE.md"
+          instructions="Save as CLAUDE.md in your project root folder. Claude Code reads it automatically when you start a conversation in that project."
+        />
+        <ExportButton
+          platform="Codex"
+          description="Saves as AGENTS.md"
+          text={codex}
+          filename="AGENTS.md"
+          instructions="Save as AGENTS.md in your repository root. Codex CLI picks it up automatically as the agent's instructions."
+        />
+        <ExportButton
+          platform="Cursor"
+          description="Saves as .cursorrules"
+          text={cursor}
+          filename=".cursorrules"
+          instructions="Save as .cursorrules in your project root folder. Cursor reads it automatically and applies the rules to every AI chat in that project."
+        />
+        <ExportButton
+          platform="ChatGPT"
+          description="Paste as first message"
+          text={chatgpt}
+          filename="chatgpt.txt"
+          instructions={'Start a new ChatGPT conversation and paste this as your first message. ChatGPT will adopt the persona for that entire chat. (Too long for the Custom Instructions field — use the first-message method instead.)'}
+        />
+
+        <div class="border border-forge-border dark:border-forge-border-dark rounded-lg p-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <p class="font-medium text-sm">OpenClaw</p>
+              <p class="text-xs text-forge-muted dark:text-forge-muted-dark mt-0.5">Uses individual .md files</p>
+            </div>
+            <a
+              href="#persona-files"
+              class="shrink-0 inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-indigo-600 dark:bg-indigo-500 text-white hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 5.25 7.5 7.5 7.5-7.5m-15 6 7.5 7.5 7.5-7.5" />
+              </svg>
+              <span>Files</span>
+            </a>
+          </div>
+          <details class="mt-2">
+            <summary class="text-xs text-forge-muted dark:text-forge-muted-dark cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors select-none">
+              How to use
+            </summary>
+            <p class="mt-1.5 text-xs text-forge-muted dark:text-forge-muted-dark leading-relaxed">
+              OpenClaw uses individual .md files natively. Copy or download each file from the sections below. Place them in your OpenClaw persona directory (e.g. ~/.openclaw/personas/this-persona/).
+            </p>
+          </details>
+        </div>
+      </div>
+    </aside>
+  </div>
+</Layout>
+
+<script>
+  // Event delegation for copy and download buttons
+  document.addEventListener("click", async (e) => {
+    const target = e.target as HTMLElement;
+
+    // Handle copy buttons
+    const copyBtn = target.closest(".copy-btn") as HTMLButtonElement | null;
+    if (copyBtn) {
+      e.stopPropagation();
+      e.preventDefault();
+
+      const text = copyBtn.dataset.copyText;
+      if (!text) return;
+
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+
+      const label = copyBtn.querySelector(".copy-label");
+      const original = label?.textContent;
+      if (label) label.textContent = "Copied!";
+      copyBtn.classList.add("copied");
+
+      setTimeout(() => {
+        if (label) label.textContent = original ?? "Copy";
+        copyBtn.classList.remove("copied");
+      }, 2000);
+      return;
+    }
+
+    // Handle download buttons
+    const dlBtn = target.closest(".download-btn") as HTMLButtonElement | null;
+    if (dlBtn) {
+      e.stopPropagation();
+      e.preventDefault();
+
+      const text = dlBtn.dataset.downloadText;
+      const filename = dlBtn.dataset.downloadFilename;
+      if (!text || !filename) return;
+
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  });
+</script>

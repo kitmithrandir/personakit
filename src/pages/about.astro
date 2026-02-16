@@ -1,0 +1,29 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="About" description="Learn about PersonaKit and its mission to make AI personas accessible to everyone.">
+  <section class="py-12 sm:py-16 max-w-2xl">
+    <h1 class="text-3xl sm:text-4xl font-bold">About PersonaKit</h1>
+    <div class="mt-6 space-y-4 text-forge-muted dark:text-forge-muted-dark leading-relaxed">
+      <p>
+        PersonaKit is a community-driven marketplace for AI persona configurations. We make it easy to discover, share, and fork the markdown files that define how AI assistants behave.
+      </p>
+      <p>
+        Whether you use OpenClaw, Claude, ChatGPT, Cursor, or Codex, PersonaKit gives you ready-to-use persona configs that you can copy with a single click and customize to fit your needs.
+      </p>
+      <h2 class="text-xl font-semibold text-forge-text dark:text-forge-text-dark pt-4">How it works</h2>
+      <p>
+        Every persona on PersonaKit is built from two markdown files following the OpenClaw persona spec. <strong class="text-forge-text dark:text-forge-text-dark">IDENTITY.md</strong> defines who the persona is — name, role, and what it specializes in. <strong class="text-forge-text dark:text-forge-text-dark">SOUL.md</strong> defines how it behaves — personality, tone, communication style, and boundaries.
+      </p>
+      <p>
+        On each persona's detail page, you'll find copy buttons for every major AI platform, so you can export the persona in the right format for your tool of choice.
+      </p>
+      <h2 class="text-xl font-semibold text-forge-text dark:text-forge-text-dark pt-4">Built by Kit Mithrandir</h2>
+      <p>
+        PersonaKit is an open-source project. Questions, ideas, or contributions are welcome on
+        <a href="https://github.com/personakit" class="text-indigo-600 dark:text-indigo-400 hover:underline">GitHub</a>.
+      </p>
+    </div>
+  </section>
+</Layout>

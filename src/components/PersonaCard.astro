@@ -1,0 +1,36 @@
+---
+interface Props {
+  slug: string;
+  name: string;
+  emoji: string;
+  description: string;
+  tags: string[];
+  author: string;
+}
+
+const { slug, name, emoji, description, tags, author } = Astro.props;
+---
+
+<a href={`/persona/${slug}`} class="block group">
+  <article class="h-full border border-forge-border dark:border-forge-border-dark rounded-xl p-6 bg-forge-surface dark:bg-forge-surface-dark hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-md transition-all">
+    <div class="mb-3">
+      <span class="text-3xl" role="img" aria-label={name}>{emoji}</span>
+    </div>
+    <h3 class="text-lg font-semibold group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+      {name}
+    </h3>
+    <p class="mt-2 text-sm text-forge-muted dark:text-forge-muted-dark line-clamp-2">
+      {description}
+    </p>
+    <div class="mt-4 flex flex-wrap gap-2">
+      {tags.map((tag) => (
+        <span class="text-xs px-2 py-1 rounded-md bg-stone-200 dark:bg-stone-700 text-forge-muted dark:text-forge-muted-dark">
+          {tag}
+        </span>
+      ))}
+    </div>
+    <p class="mt-4 text-xs text-forge-muted dark:text-forge-muted-dark">
+      by {author}
+    </p>
+  </article>
+</a>

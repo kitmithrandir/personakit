@@ -1,0 +1,33 @@
+---
+interface Props {
+  tags: string[];
+}
+
+const { tags } = Astro.props;
+---
+
+<div id="tag-filter" class="flex flex-wrap gap-2" role="group" aria-label="Filter by tag">
+  {tags.map((tag) => (
+    <button
+      type="button"
+      class="tag-btn text-xs font-medium px-3 py-1.5 rounded-full border border-forge-border dark:border-forge-border-dark text-forge-muted dark:text-forge-muted-dark hover:border-indigo-300 dark:hover:border-indigo-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer select-none"
+      data-tag={tag}
+      aria-pressed="false"
+    >
+      {tag}
+    </button>
+  ))}
+</div>
+
+<style>
+  .tag-btn[data-active] {
+    border-color: #4f46e5;
+    color: #4f46e5;
+    background-color: #eef2ff;
+  }
+  :global(.dark) .tag-btn[data-active] {
+    border-color: #818cf8;
+    color: #818cf8;
+    background-color: rgba(49, 46, 129, 0.3);
+  }
+</style>

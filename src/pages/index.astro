@@ -1,0 +1,259 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PersonaCard from "../components/PersonaCard.astro";
+import SearchBar from "../components/SearchBar.astro";
+import TagFilter from "../components/TagFilter.astro";
+import configsData from "../../public/configs.json";
+
+const personas = configsData as Array<{
+  slug: string;
+  name: string;
+  emoji: string;
+  description: string;
+  tags: string[];
+  author: string;
+}>;
+
+// Extract unique tags from actual persona data, sorted alphabetically
+const allTags = [...new Set(personas.flatMap((p) => p.tags))].sort();
+
+// Minimal search data for client-side Fuse.js (no file contents)
+const searchData = personas.map((p) => ({
+  slug: p.slug,
+  name: p.name,
+  description: p.description,
+  tags: p.tags,
+  author: p.author,
+}));
+---
+
+<Layout title="Home">
+  <!-- Hero -->
+  <section class="text-center py-12 sm:py-16">
+    <h1 class="text-4xl sm:text-5xl font-bold tracking-tight">
+      AI personas,
+      <span class="text-indigo-600 dark:text-indigo-400">ready to use</span>
+    </h1>
+    <p class="mt-4 text-lg sm:text-xl text-forge-muted dark:text-forge-muted-dark max-w-2xl mx-auto">
+      Find the right specialist for any task — coding, writing, research, brainstorming, and more. Ready to use with OpenClaw, Claude, ChatGPT, Cursor, or any AI platform.
+    </p>
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+      <a
+        href="#search-section"
+        class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium rounded-lg transition-colors"
+      >
+        Browse Personas
+      </a>
+      <a
+        href="/contribute"
+        class="px-6 py-3 border border-forge-border dark:border-forge-border-dark hover:bg-stone-50 dark:hover:bg-stone-800 font-medium rounded-lg transition-colors"
+      >
+        Contribute a Persona
+      </a>
+    </div>
+  </section>
+
+  <!-- Search & Filter -->
+  <section id="search-section" class="py-4 space-y-4">
+    <SearchBar />
+    <TagFilter tags={allTags} />
+  </section>
+
+  <!-- Persona Grid -->
+  <section class="py-6">
+    <h2 id="personas-heading" class="text-2xl font-bold mb-6">Featured Personas</h2>
+    <div id="persona-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {personas.map((persona) => (
+        <div class="persona-item grid" data-slug={persona.slug}>
+          <PersonaCard
+            slug={persona.slug}
+            name={persona.name}
+            emoji={persona.emoji}
+            description={persona.description}
+            tags={persona.tags}
+            author={persona.author}
+          />
+        </div>
+      ))}
+    </div>
+
+    <!-- No results -->
+    <div id="no-results" class="hidden text-center py-16">
+      <p class="text-5xl mb-4">🔍</p>
+      <p class="text-lg font-medium text-forge-text dark:text-forge-text-dark">No personas found</p>
+      <p class="mt-1 text-sm text-forge-muted dark:text-forge-muted-dark">Try a different search term or clear your filters.</p>
+      <button
+        id="clear-all"
+        type="button"
+        class="mt-4 px-4 py-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950 rounded-lg transition-colors cursor-pointer"
+      >
+        Clear all filters
+      </button>
+    </div>
+  </section>
+
+  <!-- Embedded search data (hidden, read by client script) -->
+  <div id="persona-data" hidden>{JSON.stringify(searchData)}</div>
+</Layout>
+
+<script>
+  import Fuse from "fuse.js";
+
+  interface PersonaItem {
+    slug: string;
+    name: string;
+    description: string;
+    tags: string[];
+    author: string;
+  }
+
+  // Read persona data from embedded JSON
+  const dataEl = document.getElementById("persona-data");
+  const personas: PersonaItem[] = JSON.parse(dataEl?.textContent || "[]");
+
+  // Initialize Fuse.js with weighted search keys
+  const fuse = new Fuse(personas, {
+    keys: [
+      { name: "name", weight: 2 },
+      { name: "description", weight: 1.5 },
+      { name: "tags", weight: 1 },
+      { name: "author", weight: 0.5 },
+    ],
+    threshold: 0.35,
+  });
+
+  // DOM elements
+  const searchInput = document.getElementById("persona-search") as HTMLInputElement;
+  const clearBtn = document.getElementById("search-clear") as HTMLButtonElement;
+  const tagBtns = document.querySelectorAll<HTMLButtonElement>(".tag-btn");
+  const cards = document.querySelectorAll<HTMLElement>(".persona-item");
+  const heading = document.getElementById("personas-heading")!;
+  const noResults = document.getElementById("no-results")!;
+  const grid = document.getElementById("persona-grid")!;
+  const clearAllBtn = document.getElementById("clear-all")!;
+
+  // State
+  let searchQuery = "";
+  const activeTags = new Set<string>();
+
+  function update() {
+    // Search filter
+    let searchSlugs: Set<string> | null = null;
+    if (searchQuery.trim()) {
+      const results = fuse.search(searchQuery.trim());
+      searchSlugs = new Set(results.map((r) => r.item.slug));
+    }
+
+    // Tag filter (OR logic — matches any selected tag)
+    let tagSlugs: Set<string> | null = null;
+    if (activeTags.size > 0) {
+      tagSlugs = new Set(
+        personas
+          .filter((p) => p.tags.some((t) => activeTags.has(t)))
+          .map((p) => p.slug)
+      );
+    }
+
+    // Intersect search + tag results
+    let visibleSlugs: Set<string>;
+    if (searchSlugs && tagSlugs) {
+      visibleSlugs = new Set([...searchSlugs].filter((s) => tagSlugs!.has(s)));
+    } else if (searchSlugs) {
+      visibleSlugs = searchSlugs;
+    } else if (tagSlugs) {
+      visibleSlugs = tagSlugs;
+    } else {
+      visibleSlugs = new Set(personas.map((p) => p.slug));
+    }
+
+    // Show/hide cards
+    cards.forEach((card) => {
+      card.style.display = visibleSlugs.has(card.dataset.slug!) ? "" : "none";
+    });
+
+    // Update heading
+    const count = visibleSlugs.size;
+    const isFiltered = searchQuery.trim() || activeTags.size > 0;
+    if (isFiltered) {
+      heading.textContent = count === 1 ? "1 persona found" : `${count} personas found`;
+    } else {
+      heading.textContent = "Featured Personas";
+    }
+
+    // No results state
+    noResults.classList.toggle("hidden", count > 0);
+    grid.style.display = count === 0 ? "none" : "";
+
+    // Clear button visibility
+    clearBtn.style.display = searchQuery ? "" : "none";
+  }
+
+  // Debounced search input
+  let timer: ReturnType<typeof setTimeout>;
+  searchInput.addEventListener("input", () => {
+    searchQuery = searchInput.value;
+    clearTimeout(timer);
+    timer = setTimeout(update, 150);
+  });
+
+  // Clear search
+  clearBtn.addEventListener("click", () => {
+    searchInput.value = "";
+    searchQuery = "";
+    update();
+    searchInput.focus();
+  });
+
+  // Tag toggle
+  tagBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const tag = btn.dataset.tag!;
+      if (activeTags.has(tag)) {
+        activeTags.delete(tag);
+        btn.removeAttribute("data-active");
+        btn.setAttribute("aria-pressed", "false");
+      } else {
+        activeTags.add(tag);
+        btn.setAttribute("data-active", "");
+        btn.setAttribute("aria-pressed", "true");
+      }
+      update();
+    });
+  });
+
+  // Clear all filters (from no-results message)
+  clearAllBtn.addEventListener("click", () => {
+    searchInput.value = "";
+    searchQuery = "";
+    activeTags.clear();
+    tagBtns.forEach((btn) => {
+      btn.removeAttribute("data-active");
+      btn.setAttribute("aria-pressed", "false");
+    });
+    update();
+    searchInput.focus();
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener("keydown", (e) => {
+    // "/" to focus search (when not already in an input)
+    if (
+      e.key === "/" &&
+      !(document.activeElement instanceof HTMLInputElement) &&
+      !(document.activeElement instanceof HTMLTextAreaElement)
+    ) {
+      e.preventDefault();
+      searchInput.focus();
+    }
+    // Escape to clear search or blur
+    if (e.key === "Escape" && document.activeElement === searchInput) {
+      if (searchQuery) {
+        searchInput.value = "";
+        searchQuery = "";
+        update();
+      } else {
+        searchInput.blur();
+      }
+    }
+  });
+</script>

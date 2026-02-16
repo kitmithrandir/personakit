@@ -1,0 +1,27 @@
+{
+  "name": "personakit",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev --host",
+    "build": "node scripts/build-index.js && astro build",
+    "build:index": "node scripts/build-index.js",
+    "validate": "node scripts/validate-config.js",
+    "preview": "astro preview --host"
+  },
+  "dependencies": {
+    "@tailwindcss/typography": "0.5.19",
+    "@tailwindcss/vite": "4.1.18",
+    "astro": "5.17.1",
+    "fuse.js": "7.1.0",
+    "gray-matter": "4.0.3",
+    "rehype-sanitize": "6.0.0",
+    "rehype-stringify": "10.0.1",
+    "remark-gfm": "4.0.1",
+    "remark-parse": "11.0.0",
+    "remark-rehype": "11.1.2",
+    "tailwindcss": "4.1.18",
+    "unified": "11.0.5"
+  }
+}
