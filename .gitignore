@@ -15,9 +15,12 @@ dist/
 credentials.json
 secrets.json
 
-# Claude Code local settings
+# Claude Code and project docs (internal only)
 .claude/
+CLAUDE.md
 CLAUDE.local.md
+PROJECT_BRIEF.md
+SECURITY.md
 
 # OS files
 .DS_Store
