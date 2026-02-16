@@ -25,6 +25,9 @@ const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "";
     </p>
   </section>
 
+  <!-- All form sections (hidden on success) -->
+  <div id="form-sections">
+
   <!-- Section 2: Paste Area -->
   <section class="mt-10 max-w-3xl">
     <h2 class="text-xl font-semibold mb-4">Your files</h2>
@@ -239,14 +242,23 @@ const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "";
     </button>
   </div>
 
-  <!-- Success message (shown after successful submission) -->
-  <div id="submit-success" class="mt-6 max-w-3xl hidden">
-    <div class="p-4 border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/50 rounded-lg">
-      <p class="font-medium text-green-800 dark:text-green-300">Submission received!</p>
-      <p class="mt-2 text-sm text-green-700 dark:text-green-400">
+  </div><!-- /form-sections -->
+
+  <!-- Success message (shown after successful submission, replaces form) -->
+  <div id="submit-success" class="mt-10 max-w-3xl hidden">
+    <div class="p-6 border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-950/50 rounded-lg">
+      <p class="text-lg font-semibold text-green-800 dark:text-green-300">Submission received!</p>
+      <p class="mt-3 text-green-700 dark:text-green-400">
         Your persona has been submitted for review. We'll take a look and get it on the site once
         it meets our guidelines. You'll hear from us at the email you provided.
       </p>
+      <button
+        id="submit-another-btn"
+        type="button"
+        class="mt-5 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-green-300 dark:border-green-700 text-green-800 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors cursor-pointer"
+      >
+        Submit another persona
+      </button>
     </div>
   </div>
   <!-- Turnstile API script (external, loaded async) -->
@@ -642,9 +654,9 @@ const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "";
       const data = await res.json();
 
       if (data.success) {
+        document.getElementById("form-sections")!.classList.add("hidden");
         submitSuccess.classList.remove("hidden");
-        submitBtn.classList.add("hidden");
-        submitSuccess.scrollIntoView({ behavior: "smooth", block: "center" });
+        window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
         showError(data.error || "Something went wrong. Please try again.");
       }
@@ -665,5 +677,10 @@ const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "";
   // ── Author handle auto-format ──
   submitAuthor.addEventListener("input", () => {
     submitAuthor.value = submitAuthor.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
+  });
+
+  // ── Submit another ──
+  document.getElementById("submit-another-btn")!.addEventListener("click", () => {
+    location.reload();
   });
 </script>
