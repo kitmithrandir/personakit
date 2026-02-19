@@ -175,9 +175,20 @@ const searchData = personas.map((p) => ({
       visibleSlugs = new Set(personas.map((p) => p.slug));
     }
 
-    // Show/hide cards
+    // Show/hide cards with smooth transitions
     cards.forEach((card) => {
-      card.style.display = visibleSlugs.has(card.dataset.slug!) ? "" : "none";
+      const shouldShow = visibleSlugs.has(card.dataset.slug!);
+      if (shouldShow) {
+        card.removeAttribute("data-hidden");
+        card.style.display = "";
+      } else {
+        card.setAttribute("data-hidden", "");
+        setTimeout(() => {
+          if (card.hasAttribute("data-hidden")) {
+            card.style.display = "none";
+          }
+        }, 200);
+      }
     });
 
     // Update heading
