@@ -61,9 +61,20 @@ const searchData = personas.map((p) => ({
 
   <!-- Search & Filter -->
   <section id="search-section" class="py-4 space-y-4">
-    <div class="relative">
-      <SearchBar />
-      <span class="hidden sm:inline-flex absolute right-3 top-1/2 -translate-y-1/2 items-center px-1.5 py-0.5 text-xs font-mono text-forge-muted dark:text-forge-muted-dark border border-forge-border dark:border-forge-border-dark rounded" id="search-hint" aria-hidden="true">/</span>
+    <div class="flex gap-3 items-center">
+      <div class="relative flex-1">
+        <SearchBar />
+        <span class="hidden sm:inline-flex absolute right-3 top-1/2 -translate-y-1/2 items-center px-1.5 py-0.5 text-xs font-mono text-forge-muted dark:text-forge-muted-dark border border-forge-border dark:border-forge-border-dark rounded" id="search-hint" aria-hidden="true">/</span>
+      </div>
+      <select
+        id="sort-select"
+        class="px-3 py-3 rounded-lg border border-forge-border dark:border-forge-border-dark bg-forge-surface dark:bg-forge-surface-dark text-sm text-forge-text dark:text-forge-text-dark focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent cursor-pointer"
+        aria-label="Sort personas"
+      >
+        <option value="featured">Featured</option>
+        <option value="az">A&ndash;Z</option>
+        <option value="author">Author</option>
+      </select>
     </div>
     <TagFilter tags={allTags} />
   </section>
@@ -144,6 +155,9 @@ const searchData = personas.map((p) => ({
   // State
   let searchQuery = "";
   const activeTags = new Set<string>();
+  let sortMode = "featured";
+  const sortSelect = document.getElementById("sort-select") as HTMLSelectElement;
+  const originalOrder = Array.from(cards).map((c) => c.dataset.slug!);
 
   function update() {
     // Search filter
@@ -190,6 +204,34 @@ const searchData = personas.map((p) => ({
         }, 200);
       }
     });
+
+    // Sort visible cards
+    const visibleCards = Array.from(cards).filter(
+      (c) => visibleSlugs.has(c.dataset.slug!)
+    );
+
+    if (sortMode === "az") {
+      visibleCards.sort((a, b) => {
+        const nameA = personas.find((p) => p.slug === a.dataset.slug!)?.name ?? "";
+        const nameB = personas.find((p) => p.slug === b.dataset.slug!)?.name ?? "";
+        return nameA.localeCompare(nameB);
+      });
+    } else if (sortMode === "author") {
+      visibleCards.sort((a, b) => {
+        const pA = personas.find((p) => p.slug === a.dataset.slug!);
+        const pB = personas.find((p) => p.slug === b.dataset.slug!);
+        return (pA?.author ?? "").localeCompare(pB?.author ?? "") ||
+          (pA?.name ?? "").localeCompare(pB?.name ?? "");
+      });
+    } else {
+      visibleCards.sort((a, b) =>
+        originalOrder.indexOf(a.dataset.slug!) - originalOrder.indexOf(b.dataset.slug!)
+      );
+    }
+
+    for (const card of visibleCards) {
+      grid.appendChild(card);
+    }
 
     // Update heading
     const count = visibleSlugs.size;
@@ -239,6 +281,12 @@ const searchData = personas.map((p) => ({
       }
       update();
     });
+  });
+
+  // Sort change
+  sortSelect.addEventListener("change", () => {
+    sortMode = sortSelect.value;
+    update();
   });
 
   // Clear all filters (from no-results message)
