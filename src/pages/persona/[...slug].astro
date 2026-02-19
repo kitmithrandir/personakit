@@ -83,7 +83,7 @@ const relatedPersonas = allPersonas
   <!-- Metadata header -->
   <header class="mb-8">
     <div class="flex items-start gap-4">
-      <span class="text-5xl" role="img" aria-label={persona.name}>{persona.emoji}</span>
+      <span class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-5xl shrink-0" role="img" aria-label={persona.name}>{persona.emoji}</span>
       <div class="min-w-0">
         <div class="flex items-center gap-3 flex-wrap">
           <h1 class="text-3xl font-bold">{persona.name}</h1>
@@ -95,8 +95,10 @@ const relatedPersonas = allPersonas
               {tag}
             </span>
           ))}
-          <span class="text-xs text-forge-muted dark:text-forge-muted-dark">
-            &middot; by {persona.author}
+          <span class="text-xs text-forge-muted dark:text-forge-muted-dark flex items-center gap-1.5">
+            &middot;
+            <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-stone-300 dark:bg-stone-600 text-[9px] font-bold text-stone-600 dark:text-stone-300 uppercase">{persona.author.charAt(0)}</span>
+            {persona.author}
           </span>
         </div>
       </div>
