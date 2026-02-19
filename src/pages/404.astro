@@ -1,0 +1,27 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Page Not Found" description="The page you're looking for doesn't exist.">
+  <section class="py-16 sm:py-24 text-center">
+    <p class="text-6xl mb-6">&#x1F50D;</p>
+    <h1 class="text-3xl sm:text-4xl font-bold">Page not found</h1>
+    <p class="mt-4 text-lg text-forge-muted dark:text-forge-muted-dark max-w-md mx-auto">
+      The page you're looking for doesn't exist or has been moved.
+    </p>
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+      <a
+        href="/"
+        class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium rounded-lg transition-colors"
+      >
+        Browse Personas
+      </a>
+      <a
+        href="/contribute"
+        class="px-6 py-3 border border-forge-border dark:border-forge-border-dark hover:bg-stone-50 dark:hover:bg-stone-800 font-medium rounded-lg transition-colors"
+      >
+        Contribute a Persona
+      </a>
+    </div>
+  </section>
+</Layout>
