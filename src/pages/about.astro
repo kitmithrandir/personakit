@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="About" description="Learn about PersonaKit and its mission to make AI personas accessible to everyone.">
-  <section class="py-12 sm:py-16 max-w-2xl">
+  <section class="py-12 sm:py-16 max-w-3xl">
     <h1 class="text-3xl sm:text-4xl font-bold">About PersonaKit</h1>
     <div class="mt-6 space-y-4 text-forge-muted dark:text-forge-muted-dark leading-relaxed">
       <p>
@@ -12,18 +12,52 @@ import Layout from "../layouts/Layout.astro";
       <p>
         Whether you use OpenClaw, Claude, ChatGPT, Cursor, or Codex, PersonaKit gives you ready-to-use persona configs that you can copy with a single click and customize to fit your needs.
       </p>
-      <h2 class="text-xl font-semibold text-forge-text dark:text-forge-text-dark pt-4">How it works</h2>
-      <p>
-        Every persona on PersonaKit is built from two markdown files following the OpenClaw persona spec. <strong class="text-forge-text dark:text-forge-text-dark">IDENTITY.md</strong> defines who the persona is — name, role, and what it specializes in. <strong class="text-forge-text dark:text-forge-text-dark">SOUL.md</strong> defines how it behaves — personality, tone, communication style, and boundaries.
-      </p>
-      <p>
-        On each persona's detail page, you'll find copy buttons for every major AI platform, so you can export the persona in the right format for your tool of choice.
-      </p>
-      <h2 class="text-xl font-semibold text-forge-text dark:text-forge-text-dark pt-4">Built by Kit Mithrandir</h2>
-      <p>
-        PersonaKit is an open-source project. Questions, ideas, or contributions are welcome on
-        <a href="https://github.com/kitmithrandir/personakit" class="text-indigo-600 dark:text-indigo-400 hover:underline">GitHub</a>.
-      </p>
+    </div>
+
+    <h2 class="text-xl font-semibold text-forge-text dark:text-forge-text-dark mt-10 mb-6">How it works</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="p-5 rounded-xl border border-forge-border dark:border-forge-border-dark bg-forge-surface dark:bg-forge-surface-dark">
+        <span class="text-2xl" aria-hidden="true">&#x1FAAA;</span>
+        <h3 class="mt-3 font-semibold text-forge-text dark:text-forge-text-dark">Identity</h3>
+        <p class="mt-2 text-sm text-forge-muted dark:text-forge-muted-dark">
+          IDENTITY.md defines who the persona is &mdash; name, role, and what it specializes in.
+        </p>
+      </div>
+      <div class="p-5 rounded-xl border border-forge-border dark:border-forge-border-dark bg-forge-surface dark:bg-forge-surface-dark">
+        <span class="text-2xl" aria-hidden="true">&#x2728;</span>
+        <h3 class="mt-3 font-semibold text-forge-text dark:text-forge-text-dark">Soul</h3>
+        <p class="mt-2 text-sm text-forge-muted dark:text-forge-muted-dark">
+          SOUL.md defines how it behaves &mdash; personality, tone, communication style, and boundaries.
+        </p>
+      </div>
+      <div class="p-5 rounded-xl border border-forge-border dark:border-forge-border-dark bg-forge-surface dark:bg-forge-surface-dark">
+        <span class="text-2xl" aria-hidden="true">&#x1F4E6;</span>
+        <h3 class="mt-3 font-semibold text-forge-text dark:text-forge-text-dark">Export</h3>
+        <p class="mt-2 text-sm text-forge-muted dark:text-forge-muted-dark">
+          One-click export for Claude Code, Codex, Cursor, ChatGPT, or use natively with OpenClaw.
+        </p>
+      </div>
+    </div>
+
+    <h2 class="text-xl font-semibold text-forge-text dark:text-forge-text-dark mt-10">Built by Kit Mithrandir</h2>
+    <p class="mt-3 text-forge-muted dark:text-forge-muted-dark leading-relaxed">
+      PersonaKit is an open-source project. Questions, ideas, or contributions are welcome on
+      <a href="https://github.com/kitmithrandir/personakit" class="text-indigo-600 dark:text-indigo-400 hover:underline">GitHub</a>.
+    </p>
+
+    <div class="mt-10 flex flex-wrap gap-3">
+      <a
+        href="/"
+        class="px-5 py-2.5 text-sm font-medium rounded-lg bg-indigo-600 dark:bg-indigo-500 text-white hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors"
+      >
+        Browse Personas
+      </a>
+      <a
+        href="/contribute"
+        class="px-5 py-2.5 text-sm font-medium rounded-lg border border-forge-border dark:border-forge-border-dark hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors"
+      >
+        Contribute a Persona
+      </a>
     </div>
   </section>
 </Layout>
