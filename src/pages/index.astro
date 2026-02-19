@@ -29,33 +29,42 @@ const searchData = personas.map((p) => ({
 
 <Layout title="Home">
   <!-- Hero -->
-  <section class="text-center py-12 sm:py-16">
-    <h1 class="text-4xl sm:text-5xl font-bold tracking-tight">
-      AI personas,
-      <span class="text-indigo-600 dark:text-indigo-400">ready to use</span>
-    </h1>
-    <p class="mt-4 text-lg sm:text-xl text-forge-muted dark:text-forge-muted-dark max-w-2xl mx-auto">
-      Find the right specialist for any task — coding, writing, research, brainstorming, and more. Ready to use with OpenClaw, Claude, ChatGPT, Cursor, or any AI platform.
-    </p>
-    <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-      <a
-        href="#search-section"
-        class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium rounded-lg transition-colors"
-      >
-        Browse Personas
-      </a>
-      <a
-        href="/contribute"
-        class="px-6 py-3 border border-forge-border dark:border-forge-border-dark hover:bg-stone-50 dark:hover:bg-stone-800 font-medium rounded-lg transition-colors"
-      >
-        Contribute a Persona
-      </a>
+  <section class="text-center py-12 sm:py-16 relative">
+    <div class="absolute inset-0 dot-grid opacity-50 pointer-events-none" aria-hidden="true"></div>
+    <div class="relative">
+      <h1 class="text-4xl sm:text-5xl font-bold tracking-tight">
+        AI personas,
+        <span class="text-indigo-600 dark:text-indigo-400">ready to use</span>
+      </h1>
+      <p class="mt-4 text-lg sm:text-xl text-forge-muted dark:text-forge-muted-dark max-w-2xl mx-auto">
+        Find the right specialist for any task — coding, writing, research, brainstorming, and more. Ready to use with OpenClaw, Claude, ChatGPT, Cursor, or any AI platform.
+      </p>
+      <p class="mt-3 text-sm text-forge-muted dark:text-forge-muted-dark">
+        {personas.length} personas across {allTags.length} categories
+      </p>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <a
+          href="#search-section"
+          class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium rounded-lg transition-colors"
+        >
+          Browse Personas
+        </a>
+        <a
+          href="/contribute"
+          class="px-6 py-3 border border-forge-border dark:border-forge-border-dark hover:bg-stone-50 dark:hover:bg-stone-800 font-medium rounded-lg transition-colors"
+        >
+          Contribute a Persona
+        </a>
+      </div>
     </div>
   </section>
 
   <!-- Search & Filter -->
   <section id="search-section" class="py-4 space-y-4">
-    <SearchBar />
+    <div class="relative">
+      <SearchBar />
+      <span class="hidden sm:inline-flex absolute right-3 top-1/2 -translate-y-1/2 items-center px-1.5 py-0.5 text-xs font-mono text-forge-muted dark:text-forge-muted-dark border border-forge-border dark:border-forge-border-dark rounded" id="search-hint" aria-hidden="true">/</span>
+    </div>
     <TagFilter tags={allTags} />
   </section>
 
@@ -233,6 +242,15 @@ const searchData = personas.map((p) => ({
     update();
     searchInput.focus();
   });
+
+  // Hide "/" hint when search is focused
+  const searchHint = document.getElementById("search-hint");
+  if (searchHint) {
+    searchInput.addEventListener("focus", () => { searchHint.style.display = "none"; });
+    searchInput.addEventListener("blur", () => {
+      if (!searchQuery) searchHint.style.display = "";
+    });
+  }
 
   // Keyboard shortcuts
   document.addEventListener("keydown", (e) => {

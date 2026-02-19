@@ -55,6 +55,16 @@ body {
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
+/* Subtle dot grid for hero background */
+.dot-grid {
+  background-image: radial-gradient(circle, #d6d3d1 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.dark .dot-grid {
+  background-image: radial-gradient(circle, #44403C 1px, transparent 1px);
+}
+
 .persona-item[data-hidden] {
   opacity: 0;
   transform: scale(0.97);
