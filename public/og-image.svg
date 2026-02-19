@@ -1,0 +1,7 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#1C1917"/>
+  <path d="M600 220L610 250.5L640.5 260.5L610 270.5L600 301L590 270.5L559.5 260.5L590 250.5L600 220Z" fill="#FBBF24"/>
+  <text x="600" y="370" text-anchor="middle" fill="#818CF8" font-family="system-ui, sans-serif" font-size="72" font-weight="bold">PersonaKit</text>
+  <text x="600" y="420" text-anchor="middle" fill="#A8A29E" font-family="system-ui, sans-serif" font-size="32">AI personas, ready to use</text>
+  <text x="600" y="470" text-anchor="middle" fill="#78716C" font-family="system-ui, sans-serif" font-size="24">personakit.dev</text>
+</svg>
