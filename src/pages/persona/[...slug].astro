@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import PersonaCard from "../../components/PersonaCard.astro";
 import CopyButton from "../../components/CopyButton.astro";
 import ExportButton from "../../components/ExportButton.astro";
 import { renderMarkdown } from "../../utils/markdown";
@@ -53,6 +54,18 @@ const claudeCode = exportClaudeCode(persona.files, persona.name);
 const codex = exportCodex(persona.files, persona.name);
 const cursor = exportCursor(persona.files, persona.name);
 const chatgpt = exportChatGPT(persona.files, persona.name);
+
+// Find related personas (share at least one tag, exclude self, deterministic shuffle by slug)
+const allPersonas = configsData as Persona[];
+const relatedPersonas = allPersonas
+  .filter((p) => p.slug !== persona.slug && p.tags.some((t: string) => persona.tags.includes(t)))
+  .sort((a, b) => {
+    // Deterministic sort: hash slug with current persona slug
+    const hashA = (a.slug + persona.slug).split("").reduce((h, c) => ((h << 5) - h + c.charCodeAt(0)) | 0, 0);
+    const hashB = (b.slug + persona.slug).split("").reduce((h, c) => ((h << 5) - h + c.charCodeAt(0)) | 0, 0);
+    return hashA - hashB;
+  })
+  .slice(0, 3);
 ---
 
 <Layout title={persona.name} description={persona.description}>
@@ -186,6 +199,24 @@ const chatgpt = exportChatGPT(persona.files, persona.name);
       </div>
     </aside>
   </div>
+
+  {relatedPersonas.length > 0 && (
+    <section class="mt-16 pt-8 border-t border-forge-border dark:border-forge-border-dark">
+      <h2 class="text-lg font-semibold mb-6">You might also like</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {relatedPersonas.map((rp) => (
+          <PersonaCard
+            slug={rp.slug}
+            name={rp.name}
+            emoji={rp.emoji}
+            description={rp.description}
+            tags={rp.tags}
+            author={rp.author}
+          />
+        ))}
+      </div>
+    </section>
+  )}
 </Layout>
 
 <script>
