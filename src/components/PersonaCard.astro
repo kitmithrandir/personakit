@@ -12,9 +12,9 @@ const { slug, name, emoji, description, tags, author } = Astro.props;
 ---
 
 <a href={`/persona/${slug}`} class="block group">
-  <article class="h-full border border-forge-border dark:border-forge-border-dark rounded-xl p-6 bg-forge-surface dark:bg-forge-surface-dark hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-md transition-all">
+  <article class="card-animate h-full border border-forge-border dark:border-forge-border-dark rounded-xl p-6 bg-forge-surface dark:bg-forge-surface-dark hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-lg transition-all">
     <div class="mb-3">
-      <span class="text-3xl" role="img" aria-label={name}>{emoji}</span>
+      <span class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-3xl" role="img" aria-label={name}>{emoji}</span>
     </div>
     <h3 class="text-lg font-semibold group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
       {name}
@@ -29,8 +29,9 @@ const { slug, name, emoji, description, tags, author } = Astro.props;
         </span>
       ))}
     </div>
-    <p class="mt-4 text-xs text-forge-muted dark:text-forge-muted-dark">
-      by {author}
-    </p>
+    <div class="mt-4 flex items-center gap-2">
+      <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-stone-300 dark:bg-stone-600 text-[10px] font-bold text-stone-600 dark:text-stone-300 uppercase">{author.charAt(0)}</span>
+      <span class="text-xs text-forge-muted dark:text-forge-muted-dark">{author}</span>
+    </div>
   </article>
 </a>
