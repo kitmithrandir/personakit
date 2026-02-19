@@ -20,14 +20,17 @@ const { tags } = Astro.props;
 </div>
 
 <style>
+  .tag-btn {
+    transition: all 0.15s ease;
+  }
   .tag-btn[data-active] {
     border-color: #4f46e5;
-    color: #4f46e5;
-    background-color: #eef2ff;
+    color: #ffffff;
+    background-color: #4f46e5;
   }
   :global(.dark) .tag-btn[data-active] {
     border-color: #818cf8;
-    color: #818cf8;
-    background-color: rgba(49, 46, 129, 0.3);
+    color: #ffffff;
+    background-color: rgba(99, 102, 241, 0.4);
   }
 </style>
